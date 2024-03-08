@@ -17,7 +17,7 @@ ascii_text=f"""
  _                 __            
 |_) _ |_  _ _|_ _ |_  _ _|_ _ |_ 
 | \(_)|_)(_) |__> |  (/_ |_(_ | |
-            Developed By: {colored("rahuldora377","green")}
+                {colored("Developed By: ","green")}{colored("rahuldora377","cyan")}
 """
 
 print(colored(ascii_text,"red"))
@@ -32,12 +32,10 @@ def fetchUrl(url):
         response=requests.get(full_url)
 
         if response.status_code==200:
-            # print(response.text)
             matches=re.findall(pattern,response.text)
             for match in matches:
                 disallowd_path=match.strip()
                 full_url=url[:-1]+disallowd_path
-                # print(full_url)
                 thread=threading.Thread(target=requestRobots,args=(full_url,))
                 thread.start()
     except:
@@ -49,7 +47,6 @@ def requestRobots(url):
         if response.status_code in status_codes_to_check:
             print(f'{url} [{colored(response.status_code,"green")}]',end='\n')
     except:
-        # print(f'Problem in fetching{url}')
         pass
 
     
@@ -65,7 +62,6 @@ if args.list:
         
 
 # Handle stdin
-
 if sys.stdin.isatty() and args.list==None:
     print(colored("~~ No input is provided ~~","red"))
 else:
