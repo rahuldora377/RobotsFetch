@@ -24,7 +24,7 @@ print(colored(ascii_text,"red"))
 
 path='robots.txt'
 pattern=r'Disallow:\s(.*)'
-status_codes_to_check=(200,403,500)
+status_codes_to_check=(200,403,500,301)
 
 def fetchUrl(url):
     try:
@@ -40,14 +40,18 @@ def fetchUrl(url):
                 thread.start()
     except:
         print("Exception occoured at: "+full_url)
+    return
 
 def requestRobots(url):
     try:
         response=requests.get(url)
+        print("URL: ",url)
         if response.status_code in status_codes_to_check:
             print(f'{url} [{colored(response.status_code,"green")}]',end='\n')
+        else:
+            print("path is not accessible")
     except:
-        pass
+        return
 
     
 if args.list:
