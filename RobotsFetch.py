@@ -3,6 +3,24 @@ import re
 import threading
 from termcolor import colored
 import sys
+import argparse
+
+parser=argparse.ArgumentParser(
+    description="Fetch robots.txt from a list of url and get status of each Disallowed individual path"
+)
+parser.add_argument("--list",help="path to file containing a list of target URLs")
+
+args=parser.parse_args()
+
+
+ascii_text=f"""
+ _                 __            
+|_) _ |_  _ _|_ _ |_  _ _|_ _ |_ 
+| \(_)|_)(_) |__> |  (/_ |_(_ | |
+            Developed By: {colored("rahuldora377","green")}
+"""
+
+print(colored(ascii_text,"red"))
 
 path='robots.txt'
 pattern=r'Disallow:\s(.*)'
@@ -35,19 +53,28 @@ def requestRobots(url):
         pass
 
     
+if args.list:
+    with open(args.list,'r') as urls:
+        for url in urls:
+            url=url.strip()
+            if not url.endswith('/'):
+                url+='/'
 
-with open(f'{sys.argv[1]}','r') as urls:
-    for url in urls:
-        url=url.strip()
-        if not url.endswith('/'):
-            url+='/'
-
-        thread=threading.Thread(target=fetchUrl,args=(url,))
-        thread.start()
-
-print(sys.argv)
+            thread=threading.Thread(target=fetchUrl,args=(url,))
+            thread.start()
         
 
+# Handle stdin
+
+if sys.stdin.isatty() and args.list==None:
+    print(colored("~~ No input is provided ~~","red"))
+else:
+    for url in sys.stdin:
+        url=url.strip()
+        if not url.startswith('/'):
+            url+='/'
+        thread=threading.Thread(target=fetchUrl,args=(url,))
+        thread.start()
 
 
 
