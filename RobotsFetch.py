@@ -24,7 +24,7 @@ print(colored(ascii_text,"red"))
 
 path='robots.txt'
 pattern=r'Disallow:\s(.*)'
-status_codes_to_check=(200,403,500,301)
+status_codes_to_check=(200,403,500,301,302)
 
 def fetchUrl(url):
     try:
@@ -43,7 +43,7 @@ def fetchUrl(url):
 
 def requestRobots(url):
     try:
-        response=requests.get(url)
+        response=requests.get(url,allow_redirects=False)
         if response.status_code in status_codes_to_check:
             print(f'{url} [{colored(response.status_code,"green")}]',end='\n')
     except:
@@ -71,8 +71,6 @@ if not sys.stdin.isatty(): #returns True if something is not passed using stdin
 
         thread=threading.Thread(target=fetchUrl,args=(url,))
         thread.start()
-
-
 
 
 
