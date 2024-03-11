@@ -9,6 +9,7 @@ parser=argparse.ArgumentParser(
     description="Fetch robots.txt from a list of url and get status of each Disallowed individual path"
 )
 parser.add_argument("--list",help="path to file containing a list of target URLs")
+parser.add_argument("--silent",action='store_true',help="silent mode")
 
 args=parser.parse_args()
 
@@ -26,6 +27,7 @@ path='robots.txt'
 pattern=r'Disallow:\s(.*)'
 status_codes_to_check=(200,403,500,301,302)
 
+#Build full url to each disallowed part from robots.txt file
 def fetchUrl(url):
     try:
         full_url=url+path
@@ -41,16 +43,18 @@ def fetchUrl(url):
     except:
         print("Exception occoured at: "+full_url)
 
+
 def requestRobots(url):
     try:
         response=requests.get(url,allow_redirects=False)
         if response.status_code in status_codes_to_check:
-            print(f'{url} [{colored(response.status_code,"green")}]',end='\n')
+            if args.silent:
+                print(f'{url}',end='\n')
+            else:
+                print(f'{url} [{colored(response.status_code,"green")}]',end='\n')
     except:
         pass
 
-
-# print(args.list)
     
 if args.list:
     with open(args.list,'r') as urls:
