@@ -40,19 +40,17 @@ def fetchUrl(url):
                 thread.start()
     except:
         print("Exception occoured at: "+full_url)
-    return
 
 def requestRobots(url):
     try:
         response=requests.get(url)
-        print("URL: ",url)
         if response.status_code in status_codes_to_check:
             print(f'{url} [{colored(response.status_code,"green")}]',end='\n')
-        else:
-            print("path is not accessible")
     except:
-        return
+        pass
 
+
+# print(args.list)
     
 if args.list:
     with open(args.list,'r') as urls:
@@ -65,16 +63,16 @@ if args.list:
             thread.start()
         
 
-# Handle stdin
-if sys.stdin.isatty() and args.list==None:
-    print(colored("~~ No input is provided ~~","red"))
-else:
+if not sys.stdin.isatty(): #returns True if something is not passed using stdin
     for url in sys.stdin:
         url=url.strip()
-        if not url.startswith('/'):
+        if not url.endswith('/'):
             url+='/'
+
         thread=threading.Thread(target=fetchUrl,args=(url,))
         thread.start()
+
+
 
 
 
